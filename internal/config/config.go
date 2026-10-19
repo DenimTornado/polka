@@ -10,6 +10,7 @@ import (
 )
 
 type Config struct {
+	FBCPath string
 	// Addr is the HTTP listen address, e.g. ":12791" or "127.0.0.1:8080".
 	Addr string
 	// DataDir holds the SQLite database and caches.
@@ -44,6 +45,7 @@ func Load(args []string, extra func(*flag.FlagSet)) (*Config, []string, error) {
 	fs.StringVar(&cfg.Addr, "addr", env("POLKA_ADDR", ":12791"), "HTTP listen address")
 	fs.StringVar(&cfg.DataDir, "data-dir", env("POLKA_DATA_DIR", defaultData), "directory for database and caches")
 	fs.StringVar(&cfg.LibraryDir, "library-dir", env("POLKA_LIBRARY_DIR", ""), "root directory of the book library")
+	fs.StringVar(&cfg.FBCPath, "fbc-path", env("POLKA_FBC_PATH", "/usr/local/bin/fbc"), "path to the external FB2 to EPUB converter")
 	fs.StringVar(&cfg.Auth, "auth", env("POLKA_AUTH", "required"), `access mode: "required", "public" or "demo"`)
 	if extra != nil {
 		extra(fs)

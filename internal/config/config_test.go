@@ -11,6 +11,7 @@ import (
 func TestLoadDefaultsAndOverrides(t *testing.T) {
 	// Defaults (with the data dir redirected so the test never touches $HOME).
 	dir := t.TempDir()
+	t.Setenv("POLKA_FBC_PATH", "")
 	t.Setenv("POLKA_ADDR", "")
 	t.Setenv("POLKA_LIBRARY_DIR", "")
 	t.Setenv("POLKA_AUTH", "")
@@ -21,6 +22,9 @@ func TestLoadDefaultsAndOverrides(t *testing.T) {
 	}
 	if cfg.Addr != ":12791" || cfg.Auth != "required" || cfg.LibraryDir != "" || len(rest) != 0 {
 		t.Errorf("defaults: %+v rest=%v", cfg, rest)
+	}
+	if cfg.FBCPath != "/usr/local/bin/fbc" {
+		t.Errorf("default fbc: %q", cfg.FBCPath)
 	}
 	if cfg.DataDir != filepath.Join(dir, "envdata") {
 		t.Errorf("env data dir: %q", cfg.DataDir)
@@ -33,12 +37,16 @@ func TestLoadDefaultsAndOverrides(t *testing.T) {
 	}
 
 	// Environment supplies values…
+	t.Setenv("POLKA_FBC_PATH", "/custom/fbc")
 	t.Setenv("POLKA_ADDR", "127.0.0.1:1")
 	t.Setenv("POLKA_LIBRARY_DIR", "/books")
 	t.Setenv("POLKA_AUTH", "public")
 	cfg, _, _ = Load(nil, nil)
 	if cfg.Addr != "127.0.0.1:1" || cfg.LibraryDir != "/books" || cfg.Auth != "public" {
 		t.Errorf("env: %+v", cfg)
+	}
+	if cfg.FBCPath != "/custom/fbc" {
+		t.Errorf("env fbc: %q", cfg.FBCPath)
 	}
 	// …and flags beat the environment; positional args come back.
 	flagData := filepath.Join(dir, "flagdata")

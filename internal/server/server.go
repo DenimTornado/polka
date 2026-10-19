@@ -9,6 +9,7 @@ import (
 	"mime"
 	"net/http"
 	"path/filepath"
+	"sync"
 	"time"
 
 	bundled "github.com/vestigiumincaligne/polka/collections"
@@ -36,6 +37,8 @@ type Server struct {
 	reader  readerCache          // parsed books for online reading
 	basic   basicCache           // verified Basic credentials (OPDS)
 	genres  genreCache           // genre counters for search
+
+	epubLocks [64]sync.Mutex
 
 	loginLimiter *rateLimiter // throttle password guessing
 	guestLimiter *rateLimiter // throttle demo guest creation
@@ -191,6 +194,7 @@ func New(cfg *config.Config, log *slog.Logger, st *store.Store, lib *library.Lib
 		// Covers and book files
 		mux.HandleFunc("GET /Images/covers/{id}", s.protected(s.handleCover))
 		mux.HandleFunc("GET /Images/fb2/{id}", s.protected(s.handleBookDownload))
+		mux.HandleFunc("GET /Images/epub/{id}", s.protected(s.handleBookEPUB))
 		mux.HandleFunc("GET /Images/zip/{id}", s.protected(s.handleBookZip))
 		mux.HandleFunc("GET /Images/fb2compact/{id}", s.protected(s.handleBookCompact))
 

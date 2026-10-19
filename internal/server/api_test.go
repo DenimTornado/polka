@@ -34,7 +34,7 @@ const testFB2 = `<?xml version="1.0" encoding="UTF-8"?>
 </FictionBook>`
 
 // newTestServer starts a server with one book in a synthetic library.
-func newTestServer(t *testing.T) (*httptest.Server, int64) {
+func newTestServer(t *testing.T, configure ...func(*config.Config, *store.Store)) (*httptest.Server, int64) {
 	t.Helper()
 	dir := t.TempDir()
 
@@ -90,6 +90,9 @@ func newTestServer(t *testing.T) (*httptest.Server, int64) {
 	t.Cleanup(func() { users.Close() })
 
 	cfg := &config.Config{LibraryDir: libDir, Auth: "public"}
+	for _, option := range configure {
+		option(cfg, st)
+	}
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelError}))
 	webFS := fstest.MapFS{"index.html": &fstest.MapFile{Data: []byte("<html/>")}}
 	srv := New(cfg, log, st, library.New(libDir), users, nil, webFS)

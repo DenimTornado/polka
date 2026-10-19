@@ -40,6 +40,7 @@ func (s *Server) registerSyncRoutes(mux *http.ServeMux) {
 		"GET /api/v1/collections",
 		"GET /api/v1/collections/{slug}",
 		"GET /Images/zip/{id}",
+		"GET /Images/epub/{id}",
 		"GET /Images/fb2compact/{id}",
 		"GET /Images/export",
 	} {

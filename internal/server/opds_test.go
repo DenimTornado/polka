@@ -37,7 +37,7 @@ func TestOpdsDownloadAuthChallenge(t *testing.T) {
 	id := up["results"][0].BookID
 
 	plain := &http.Client{}
-	for _, path := range []string{"/Images/fb2/", "/Images/zip/", "/Images/covers/"} {
+	for _, path := range []string{"/Images/fb2/", "/Images/epub/", "/Images/zip/", "/Images/covers/"} {
 		r, _ := plain.Get(ts.URL + path + itoa64(id))
 		r.Body.Close()
 		if r.StatusCode != 401 || !strings.Contains(r.Header.Get("WWW-Authenticate"), "Basic") {

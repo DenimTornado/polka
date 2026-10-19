@@ -155,6 +155,7 @@ func opdsBookEntry(b store.Book) opdsEntry {
 		entry.Links = append(entry.Links,
 			opdsLink{Rel: relAcquisition, Href: "/Images/zip/" + id, Type: "application/fb2+zip"},
 			opdsLink{Rel: relAcquisition, Href: "/Images/fb2/" + id, Type: "application/x-fictionbook+xml"},
+			opdsLink{Rel: relAcquisition, Href: "/Images/epub/" + id, Type: "application/epub+zip"},
 		)
 	case "epub":
 		entry.Links = append(entry.Links,
